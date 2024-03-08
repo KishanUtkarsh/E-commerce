@@ -2,6 +2,7 @@ package com.appitude.productservice;
 
 import com.appitude.productservice.DTO.ProductRequest;
 import com.appitude.productservice.Repository.ProductRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -56,7 +57,41 @@ class ProductServiceApplicationTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(productRequestString)
 		).andExpect(status().isCreated());
-		Assertions.assertEquals(1,repository.findAll().size());
+		Assertions.assertEquals(4,repository.findAll().size());
+
+
+	}
+
+	@Test
+	@DisplayName("Fetching All Data from container")
+	void shouldGiveAllProducts() throws Exception {
+
+		ProductRequest p1 = getProductRequest();
+		ProductRequest p2 = getProductRequest();
+		ProductRequest p3 = getProductRequest();
+
+		String s1 = objectMapper.writeValueAsString(p1);
+		String s2 = objectMapper.writeValueAsString(p2);
+		String s3 = objectMapper.writeValueAsString(p3);
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/product")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(s1)
+		).andExpect(status().isCreated());
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/product")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(s2)
+		).andExpect(status().isCreated());
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/product")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(s3)
+		).andExpect(status().isCreated());
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/product"))
+				.andExpect(status().is(200));
+
+		Assertions.assertEquals(3, repository.findAll().size());
+
 
 
 	}
