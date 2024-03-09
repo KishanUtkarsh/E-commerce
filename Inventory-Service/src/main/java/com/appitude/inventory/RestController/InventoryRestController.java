@@ -17,11 +17,12 @@ public class InventoryRestController {
 
     private final InventoryService service;
 
+    //http://localhost:8082/api/inventory?skuCode=iphone13&skuCode=iphone6
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<InventoryResponse> isInStock(@RequestParam("skuCode")List<String> skuCode){
+    public List<InventoryResponse> isInStock(@RequestParam("skuCode") List<String> skuCodes) {
         log.info("Fetching data from Database.");
-        log.info(skuCode.toString());
-        return service.isInStock(skuCode);
+        log.info(skuCodes.toString());
+        return service.isInStock(skuCodes);
     }
 }
